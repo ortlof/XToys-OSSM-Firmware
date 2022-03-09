@@ -37,7 +37,7 @@
 #define WIFI_CONTROLLER INPUT_PULLDOWN
 //Choose whether the default control scheme is local (e.g. OSSM remote, potentiometers, etc.) or through Wi-Fi
 //If both are desired, a hardware toggle will need to be installed and wired to WIFI_CONTROL_TOGGLE_PIN
-#define LOCAL_CONTROLLER WIFI_CONTROL_DEFAULT
+#define WIFI_CONTROL_DEFAULT LOCAL_CONTROLLER
 
 /*These are configured for the OSSM Remote - which has a screen, a potentiometer and an encoder which clicks*/
 #define SPEED_POT_PIN 34

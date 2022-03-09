@@ -5,6 +5,7 @@
 #include <HTTPClient.h>       // Needed for the Bubble APP
 #include <WiFiManager.h>      // Used to provide easy network connection  https://github.com/tzapu/WiFiManager
 #include <Wire.h>             // Used for i2c connections (Remote OLED Screen)
+#include "ModbusClientRTU.h"
 
 #include "FastLED.h"          // Used for the LED on the Reference Board (or any other pixel LEDS you may add)
 #include "OSSM_Config.h"      // START HERE FOR Configuration
@@ -98,6 +99,8 @@ float getEncoderPercentage()
 
     return positionPercentage;
 }
+
+ModbusClientRTU MB(Serial2);
 
 ///////////////////////////////////////////
 ////
@@ -453,6 +456,21 @@ void updateSettingsCharacteristic() {
   String settingsInfo = String("maxIn:") + maxInPosition + ",maxOut:" + maxOutPosition + ",maxSpeed:" + maxSpeed + ",minSpeed:" + minSpeed;
   settingsCharacteristic->setValue(settingsInfo.c_str());
 }
+
+void handleData(ModbusMessage msg, uint32_t token){
+  Serial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(), token, msg.size());
+  for (auto& byte : msg) {
+    Serial.printf("%02X ", byte);
+  Serial.println("");
+}
+}
+
+void handleError(Error error, uint32_t token){
+  // ModbusError wraps the error code and provides a readable error message for it
+  ModbusError me(error);
+  Serial.printf("Error response: %02X - %s\n", error, (const char *)me);
+}
+
 ///////////////////////////////////////////
 ////
 ////
@@ -464,6 +482,7 @@ void updateSettingsCharacteristic() {
 void setup()
 {
     Serial.begin(115200);
+    Serial2.begin(57600, SERIAL_8E1, GPIO_NUM_16, GPIO_NUM_17);
     LogDebug("\n Starting");
     delay(200);
 
@@ -472,6 +491,11 @@ void setup()
     setLedRainbow(leds);
     FastLED.show();
     stepper.connectToPins(MOTOR_STEP_PIN, MOTOR_DIRECTION_PIN);
+
+    MB.onDataHandler(&handleData);
+    MB.onErrorHandler(&handleError);
+    MB.setTimeout(2000);
+    MB.begin();
 
     preferences.begin("OSSM", false);
     maxSpeed = preferences.getInt("maxSpeed", DEFAULT_MAX_SPEED);
@@ -540,6 +564,7 @@ void setup()
                             &wifiTask,            /* Task handle to keep track of created task */
                             0);                   /* pin task to core 0 */
     delay(100);
+   
 
     if (g_has_not_homed == true)
     {
@@ -608,6 +633,13 @@ void setup()
                             0);               /* pin task to core 0 */
 
     delay(100);
+
+uint32_t Token = 1111;
+Error err = MB.addRequest(Token++, 1, READ_HOLD_REGISTER, 0x000A, 1);
+  if (err!=SUCCESS) {
+    ModbusError e(err);
+    Serial.printf("Error creating request: %02X - %s\n", (int)e, (const char *)e);
+}
 
     g_ui.UpdateMessage("OSSM Ready to Play");
 }
