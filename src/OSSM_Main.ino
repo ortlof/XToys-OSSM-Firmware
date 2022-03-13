@@ -532,14 +532,14 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(ENCODER_SWITCH), encoderPushButton, RISING);
     
     //start the WiFi connection task so we can be doing something while homing!
-    xTaskCreatePinnedToCore(wifiConnectionTask,   /* Task function. */
-                            "wifiConnectionTask", /* name of task. */
-                            3000,                /* Stack size of task */
-                            NULL,                 /* parameter of the task */
-                            1,                    /* priority of the task */
-                            &wifiTask,            /* Task handle to keep track of created task */
-                            0);                   /* pin task to core 0 */
-    delay(100);
+    //xTaskCreatePinnedToCore(wifiConnectionTask,   /* Task function. */
+    //                        "wifiConnectionTask", /* name of task. */
+    //                        3000,                /* Stack size of task */
+    //                        NULL,                 /* parameter of the task */
+    //                        1,                    /* priority of the task */
+    //                        &wifiTask,            /* Task handle to keep track of created task */
+    //                        0);                   /* pin task to core 0 */
+    //delay(100);
 
     if (g_has_not_homed == true)
     {
@@ -582,23 +582,6 @@ void setup()
     // caution. RTOS runs first in first out, so if there are no delays in your
     // tasks they will prevent all other code from running on that core!
 
-    xTaskCreatePinnedToCore(getUserInputTask,   /* Task function. */
-                            "getUserInputTask", /* name of task. */
-                            2000,              /* Stack size of task */
-                            NULL,               /* parameter of the task */
-                            1,                  /* priority of the task */
-                            &getInputTask,      /* Task handle to keep track of created task */
-                            0);                 /* pin task to core 0 */
-    delay(100);
-    xTaskCreatePinnedToCore(motionCommandTask,   /* Task function. */
-                            "motionCommandTask", /* name of task. */
-                            5000,               /* Stack size of task */
-                            NULL,                /* parameter of the task */
-                            1,                   /* priority of the task */
-                            &motionTask,         /* Task handle to keep track of created task */
-                            0);                  /* pin task to core 0 */
-
-    delay(100);
     xTaskCreatePinnedToCore(estopResetTask,   /* Task function. */
                             "estopResetTask", /* name of task. */
                             2000,            /* Stack size of task */
