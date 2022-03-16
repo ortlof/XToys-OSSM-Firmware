@@ -20,14 +20,6 @@ const float beltPitchMm = 2.0f;
 // the linear block holder length (75mm on OSSM)
 // Recommended to also subtract e.g. 20mm to keep the backstop well away from the device.
 const float maxStrokeLengthMm = 160.f;
-/*
-        Web Config
-*/
-// This should be unique to your device. You will use this on the
-// web portal to interact with your OSSM.
-// there is NO security other than knowing this name, make this unique to avoid
-// collisions with other users
-const char *ossmId = "37289dfadf73";
 
 /*
         Xtoys Config
