@@ -2,6 +2,10 @@
 Firmware for use with the OSSM (Open Source Sex Machine) by KinkyMakers.
 [https://github.com/KinkyMakers/OSSM-hardware](https://github.com/KinkyMakers/OSSM-hardware)
 
+
+# !!!!!!!!!!! Don't Use this. This is a stopped work in Progress its Dangerous. !!!!!!!!!!!!!!!!
+
+
 ## Setting Up
 1. Clone Repo localy. 
 2. Setup Platformio see [OSSM GIT] https://github.com/KinkyMakers/OSSM-hardware 
